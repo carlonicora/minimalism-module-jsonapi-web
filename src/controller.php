@@ -15,7 +15,7 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Exception;
 
-class webController extends abstractJsonApiController {
+class controller extends abstractJsonApiController {
     /** @var Environment */
     private Environment $view;
 
