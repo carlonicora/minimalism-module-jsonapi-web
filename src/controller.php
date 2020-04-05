@@ -1,5 +1,5 @@
 <?php
-namespace carlonicora\minimalism\models\jsonapi\web;
+namespace carlonicora\minimalism\modules\jsonapi\web;
 
 use carlonicora\minimalism\core\services\exceptions\serviceNotFoundException;
 use carlonicora\minimalism\core\services\factories\servicesFactory;
