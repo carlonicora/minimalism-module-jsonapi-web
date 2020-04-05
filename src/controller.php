@@ -8,7 +8,6 @@ use carlonicora\minimalism\modules\jsonapi\web\abstracts\abstractModel;
 use carlonicora\minimalism\modules\jsonapi\interfaces\responseInterface;
 use carlonicora\minimalism\modules\jsonapi\responses\dataResponse;
 use carlonicora\minimalism\modules\jsonapi\responses\errorResponse;
-use carlonicora\minimalism\services\paths\factories\serviceFactory;
 use carlonicora\minimalism\services\paths\paths;
 use RuntimeException;
 use Twig\Environment;
@@ -39,7 +38,7 @@ class controller extends abstractJsonApiController {
      */
     private function initialiseView(): void {
         /** @var paths $paths */
-        $paths = $this->services->service(serviceFactory::class);
+        $paths = $this->services->service(paths::class);
 
         /** @var abstractModel $model */
         $model = $this->model;
