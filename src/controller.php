@@ -1,42 +1,27 @@
 <?php
 namespace carlonicora\minimalism\modules\jsonapi\web;
 
+use carlonicora\minimalism\core\modules\abstracts\controllers\abstractWebController;
 use carlonicora\minimalism\core\services\exceptions\serviceNotFoundException;
-use carlonicora\minimalism\core\services\factories\servicesFactory;
-use carlonicora\minimalism\modules\jsonapi\abstracts\abstractJsonApiController;
 use carlonicora\minimalism\modules\jsonapi\web\abstracts\abstractModel;
-use carlonicora\minimalism\modules\jsonapi\interfaces\responseInterface;
-use carlonicora\minimalism\modules\jsonapi\responses\dataResponse;
-use carlonicora\minimalism\modules\jsonapi\responses\errorResponse;
+use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
+use carlonicora\minimalism\services\jsonapi\responses\dataResponse;
+use carlonicora\minimalism\services\jsonapi\responses\errorResponse;
 use carlonicora\minimalism\services\paths\paths;
 use RuntimeException;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Exception;
 
-class controller extends abstractJsonApiController {
+class controller extends abstractWebController {
     /** @var Environment */
     private Environment $view;
-
-    /**
-     * apiController constructor.
-     * @param servicesFactory $services
-     * @param string|null $modelName
-     * @param array|null $parameterValueList
-     * @param array|null $parameterValues
-     * @throws Exception
-     */
-    public function __construct(servicesFactory $services, string $modelName=null, array $parameterValueList=null, array $parameterValues=null){
-        parent::__construct($services, $modelName, $parameterValueList, $parameterValues);
-
-        $this->initialiseView();
-    }
 
     /**
      *
      * @throws serviceNotFoundException
      */
-    private function initialiseView(): void {
+    protected function initialiseView(): void {
         /** @var paths $paths */
         $paths = $this->services->service(paths::class);
 
@@ -56,8 +41,10 @@ class controller extends abstractJsonApiController {
      * @return string
      */
     public function render(): string{
-        $error = $this->model->preRender();
-        if ($error !== null){
+        try {
+            $this->model->preRender();
+        } catch (Exception $e) {
+            $error = new errorResponse($e->getCode(), $e->getMessage());
             return $error->toJson();
         }
 
@@ -89,10 +76,23 @@ class controller extends abstractJsonApiController {
         $GLOBALS['http_response_code'] = $code;
         header(dataResponse::generateProtocol() . ' ' . $code . ' ' . $data->generateText());
 
-        $this->services->cleanNonPersistentVariables();
-        $_SESSION['minimalismServices'] = $this->services;
-        setcookie('minimalismServices', $this->services->serialiseCookies(), time() + (30 * 24 * 60 * 60));
+        $this->completeRender();
 
         return $response;
+    }
+
+    /**
+     * @param Exception $e
+     * @return void
+     */
+    public function writeException(Exception $e): void {
+        $error = new errorResponse($e->getCode() ?? 500, $e->getMessage());
+
+        $code = $error->getStatus();
+        $GLOBALS['http_response_code'] = $code;
+
+        header(dataResponse::generateProtocol() . ' ' . $code . ' ' . $error->generateText());
+
+        echo $error->toJson();
     }
 }
