@@ -38,4 +38,11 @@ abstract class abstractModel extends abstractWebModel {
     public function generateData(): responseInterface{
         return $this->response;
     }
+
+    /**
+     * @return errorResponse|null
+     */
+    public function preRender() : ?errorResponse {
+        return $this->error;
+    }
 }

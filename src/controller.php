@@ -41,10 +41,8 @@ class controller extends abstractWebController {
      * @return string
      */
     public function render(): string{
-        try {
-            $this->model->preRender();
-        } catch (Exception $e) {
-            $error = new errorResponse($e->getCode(), $e->getMessage());
+        /** @var errorResponse $error  */
+        if (($error = $this->model->preRender()) !== null){
             return $error->toJson();
         }
 
