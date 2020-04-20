@@ -1,7 +1,7 @@
 {
   "name": "carlonicora/minimalism-module-jsonapi-web",
   "description": "{json:api} web module for minimalism",
-  "version": "1.0.1",
+  "version": "1.1.0-beta1",
   "homepage": "https://carlonicora.com",
   "time": "2020-04-05",
   "license": "MIT",
@@ -24,6 +24,7 @@
     "php": "^7.4",
     "carlonicora/minimalism": "~10.0",
     "carlonicora/minimalism-service-jsonapi": "~1.0",
-    "twig/twig":"~2.0"
+    "twig/twig":"~2.0",
+    "ext-json": "*"
   }
 }

@@ -8,6 +8,7 @@ use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
 use carlonicora\minimalism\services\jsonapi\responses\dataResponse;
 use carlonicora\minimalism\services\jsonapi\responses\errorResponse;
 use carlonicora\minimalism\services\paths\paths;
+use Twig\Extension\ExtensionInterface;
 
 abstract class abstractModel extends abstractWebModel {
     /** @var dataResponse  */
@@ -15,6 +16,12 @@ abstract class abstractModel extends abstractWebModel {
 
     /** @var errorResponse|null  */
     protected ?errorResponse $error=null;
+
+    /**
+     * @var array
+     */
+    private array $twigExtenstions = [];
+
     /**
      * abstractWebModel constructor.
      * @param servicesFactory $services
@@ -30,6 +37,20 @@ abstract class abstractModel extends abstractWebModel {
         /** @var paths $paths */
         $paths = $this->services->service(paths::class);
         $this->response->addMeta('url', $paths->getUrl());
+    }
+
+    /**
+     * @param ExtensionInterface $extension
+     */
+    protected function addTwigExtension(ExtensionInterface $extension): void {
+        $this->twigExtenstions[] = $extension;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTwigExtensions(): array {
+        return $this->twigExtenstions;
     }
 
     /**

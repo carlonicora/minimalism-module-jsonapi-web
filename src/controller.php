@@ -8,6 +8,7 @@ use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
 use carlonicora\minimalism\services\jsonapi\responses\dataResponse;
 use carlonicora\minimalism\services\jsonapi\responses\errorResponse;
 use carlonicora\minimalism\services\paths\paths;
+use JsonException;
 use RuntimeException;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -60,6 +61,11 @@ class controller extends abstractWebController {
 
         if ($this->model->getViewName() !== '') {
             try {
+                /** @var abstractModel $model */
+                $model = $this->model;
+                foreach ($model->getTwigExtensions() ?? [] as $twigExtension){
+                    $this->view->addExtension($twigExtension);
+                }
                 $response = $this->view->render($this->model->getViewName() . '.twig', $data->toArray());
             } catch (Exception $e) {
                 $data = new errorResponse(errorResponse::HTTP_STATUS_500, 'Failed to render the view');
@@ -82,6 +88,7 @@ class controller extends abstractWebController {
     /**
      * @param Exception $e
      * @return void
+     * @throws JsonException
      */
     public function writeException(Exception $e): void {
         $error = new errorResponse($e->getCode() ?? 500, $e->getMessage());
