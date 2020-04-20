@@ -88,7 +88,7 @@ class controller extends abstractWebController {
         $GLOBALS['http_response_code'] = $code;
         header(dataResponse::generateProtocol() . ' ' . $code . ' ' . $data->generateText());
 
-        $this->completeRender();
+        $this->completeRender($code, $response);
 
         $this->logger->addSystemEvent(null, 'Render completed');
 
