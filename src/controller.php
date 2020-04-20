@@ -73,6 +73,8 @@ class controller extends abstractWebController {
                     $this->view->addExtension($twigExtension);
                 }
                 $response = $this->view->render($this->model->getViewName() . '.twig', $data->toArray());
+
+                $this->logger->addSystemEvent(null, 'Data merged with view');
             } catch (Exception $e) {
                 $data = new errorResponse(errorResponse::HTTP_STATUS_500, 'Failed to render the view');
             }

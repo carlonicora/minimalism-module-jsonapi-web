@@ -18,10 +18,8 @@ abstract class abstractModel extends abstractWebModel {
     /** @var errorResponse|null  */
     protected ?errorResponse $error=null;
 
-    /**
-     * @var array
-     */
-    private array $twigExtenstions = [];
+    /** @var array  */
+    private array $twigExtensions = [];
 
     /**
      * abstractWebModel constructor.
@@ -39,21 +37,21 @@ abstract class abstractModel extends abstractWebModel {
         $paths = $this->services->service(paths::class);
         $this->response->addMeta('url', $paths->getUrl());
 
-        $this->twigExtenstions[] = new twigExtensions();
+        $this->twigExtensions[] = new twigExtensions();
     }
 
     /**
      * @param ExtensionInterface $extension
      */
     protected function addTwigExtension(ExtensionInterface $extension): void {
-        $this->twigExtenstions[] = $extension;
+        $this->twigExtensions[] = $extension;
     }
 
     /**
      * @return array
      */
     public function getTwigExtensions(): array {
-        return $this->twigExtenstions;
+        return $this->twigExtensions;
     }
 
     /**
