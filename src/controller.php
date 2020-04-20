@@ -40,6 +40,7 @@ class controller extends abstractWebController {
 
     /**
      * @return string
+     * @throws JsonException
      */
     public function render(): string{
         /** @var errorResponse $error  */
