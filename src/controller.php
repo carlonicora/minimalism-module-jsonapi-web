@@ -36,6 +36,7 @@ class controller extends abstractWebController {
                 throw new RuntimeException('View failure: ' . $e->getMessage(), 404);
             }
         }
+        $this->logger->addSystemEvent(null, 'Twig engine initialised');
     }
 
     /**
@@ -48,10 +49,14 @@ class controller extends abstractWebController {
             return $error->toJson();
         }
 
+        $this->logger->addSystemEvent(null, 'Pre-render completed');
+
         $response = null;
 
         /** @var responseInterface $data */
         $data = $this->model->generateData();
+
+        $this->logger->addSystemEvent(null, 'Data generated');
 
         /**
         if (array_key_exists('forceRedirect', $data)) {
@@ -82,6 +87,8 @@ class controller extends abstractWebController {
         header(dataResponse::generateProtocol() . ' ' . $code . ' ' . $data->generateText());
 
         $this->completeRender();
+
+        $this->logger->addSystemEvent(null, 'Render completed');
 
         return $response;
     }
