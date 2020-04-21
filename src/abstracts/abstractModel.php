@@ -64,7 +64,7 @@ abstract class abstractModel extends abstractWebModel {
         /** @var encrypter $encrypter */
         $encrypter = $this->services->service(encrypter::class);
 
-        return $encrypter->encryptId($parameter);
+        return $encrypter->decryptId($parameter);
     }
 
     /**
