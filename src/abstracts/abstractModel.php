@@ -5,6 +5,7 @@ use carlonicora\minimalism\core\modules\abstracts\models\abstractWebModel;
 use carlonicora\minimalism\core\services\exceptions\serviceNotFoundException;
 use carlonicora\minimalism\core\services\factories\servicesFactory;
 use carlonicora\minimalism\modules\jsonapi\web\extensions\twigExtensions;
+use carlonicora\minimalism\services\encrypter\encrypter;
 use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
 use carlonicora\minimalism\services\jsonapi\responses\dataResponse;
 use carlonicora\minimalism\services\jsonapi\responses\errorResponse;
@@ -52,6 +53,18 @@ abstract class abstractModel extends abstractWebModel {
      */
     public function getTwigExtensions(): array {
         return $this->twigExtensions;
+    }
+
+    /**
+     * @param string $parameter
+     * @return string
+     * @throws serviceNotFoundException
+     */
+    protected function encryptParameter(string $parameter) : string {
+        /** @var encrypter $encrypter */
+        $encrypter = $this->services->service(encrypter::class);
+
+        return $encrypter->encryptId($parameter);
     }
 
     /**
