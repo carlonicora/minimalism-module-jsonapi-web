@@ -51,6 +51,8 @@ class controller extends abstractWebController {
 
         $this->logger->addSystemEvent(null, 'Pre-render completed');
 
+        $this->preRender();
+
         $response = null;
 
         /** @var responseInterface $data */
