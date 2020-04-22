@@ -60,7 +60,7 @@ abstract class abstractModel extends abstractWebModel {
      * @return string
      * @throws serviceNotFoundException
      */
-    protected function encryptParameter(string $parameter) : string {
+    protected function decryptParameter(string $parameter) : string {
         /** @var encrypter $encrypter */
         $encrypter = $this->services->service(encrypter::class);
 

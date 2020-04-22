@@ -100,6 +100,7 @@ class controller extends abstractWebController {
 
     /**
      * @param Throwable $e
+     * @param string $httpStatusCode
      * @return void
      * @throws JsonException
      */
