@@ -10,6 +10,7 @@ use carlonicora\minimalism\services\jsonapi\responses\errorResponse;
 use carlonicora\minimalism\services\paths\paths;
 use JsonException;
 use RuntimeException;
+use Throwable;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Exception;
@@ -98,12 +99,12 @@ class controller extends abstractWebController {
     }
 
     /**
-     * @param Exception $e
+     * @param Throwable $e
      * @return void
      * @throws JsonException
      */
-    public function writeException(Exception $e): void {
-        $error = new errorResponse($e->getCode() ?? 500, $e->getMessage());
+    public function writeException(Throwable $e, string $httpStatusCode = '500'): void {
+        $error = new errorResponse($httpStatusCode, $e->getMessage(), $e->getCode());
 
         $code = $error->getStatus();
         $GLOBALS['http_response_code'] = $code;
