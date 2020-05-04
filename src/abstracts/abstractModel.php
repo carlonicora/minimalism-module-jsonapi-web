@@ -6,13 +6,17 @@ use carlonicora\minimalism\core\services\exceptions\serviceNotFoundException;
 use carlonicora\minimalism\core\services\factories\servicesFactory;
 use carlonicora\minimalism\modules\jsonapi\web\extensions\twigExtensions;
 use carlonicora\minimalism\services\encrypter\encrypter;
+use carlonicora\minimalism\services\jsonapi\interfaces\jsonapiModelInterface;
 use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
 use carlonicora\minimalism\services\jsonapi\responses\dataResponse;
 use carlonicora\minimalism\services\jsonapi\responses\errorResponse;
+use carlonicora\minimalism\services\jsonapi\traits\modelTrait;
 use carlonicora\minimalism\services\paths\paths;
 use Twig\Extension\ExtensionInterface;
 
-abstract class abstractModel extends abstractWebModel {
+abstract class abstractModel extends abstractWebModel implements jsonapiModelInterface {
+    use modelTrait;
+
     /** @var dataResponse  */
     protected dataResponse $response;
 
