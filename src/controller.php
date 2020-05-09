@@ -5,8 +5,8 @@ use carlonicora\minimalism\core\modules\abstracts\controllers\abstractWebControl
 use carlonicora\minimalism\core\services\exceptions\serviceNotFoundException;
 use carlonicora\minimalism\modules\jsonapi\web\abstracts\abstractModel;
 use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
-use carlonicora\minimalism\services\jsonapi\responses\dataResponse;
-use carlonicora\minimalism\services\jsonapi\responses\errorResponse;
+use carlonicora\minimalism\services\jsonapi\jsonApiDocument;
+use carlonicora\minimalism\services\jsonapi\resources\errorObject;
 use carlonicora\minimalism\services\paths\paths;
 use JsonException;
 use RuntimeException;
@@ -45,57 +45,50 @@ class controller extends abstractWebController {
      * @throws JsonException
      */
     public function render(): string{
-        /** @var errorResponse $error  */
-        if (($error = $this->model->preRender()) !== null){
-            return $error->toJson();
-        }
-
-        $this->logger->addSystemEvent(null, 'Pre-render completed');
-
-        $this->preRender();
+        $jsonApiDocument = new jsonApiDocument();
 
         $response = null;
 
-        /** @var responseInterface $data */
-        $data = $this->model->generateData();
+        /** @var errorObject $error  */
+        if (($error = $this->model->preRender()) !== null){
+            $jsonApiDocument->addError($error);
+        } else {
+            $this->logger->addSystemEvent(null, 'Pre-render completed');
 
-        $this->logger->addSystemEvent(null, 'Data generated');
+            $this->preRender();
 
-        /**
-        if (array_key_exists('forceRedirect', $data)) {
-        header('Location:' . $data['forceRedirect']);
-        exit;
-        }
-         */
+            /** @var jsonApiDocument $jsonApiDocument */
+            $jsonApiDocument = $this->model->generateData();
 
-        if ($this->model->getViewName() !== '') {
-            try {
-                /** @var abstractModel $model */
-                $model = $this->model;
-                foreach ($model->getTwigExtensions() ?? [] as $twigExtension){
-                    $this->view->addExtension($twigExtension);
+            $this->logger->addSystemEvent(null, 'Data generated');
+
+            if ($this->model->getViewName() !== '') {
+                try {
+                    foreach ($this->model->getTwigExtensions() ?? [] as $twigExtension){
+                        $this->view->addExtension($twigExtension);
+                    }
+                    $response = $this->view->render($this->model->getViewName() . '.twig', $jsonApiDocument->toArray());
+
+                    $this->logger->addSystemEvent(null, 'Data merged with view');
+                } catch (Exception $e) {
+                    $jsonApiDocument = new jsonApiDocument();
+                    $jsonApiDocument->addError(new errorObject(responseInterface::HTTP_STATUS_500, 'Failed to render the view'));
                 }
-                $response = $this->view->render($this->model->getViewName() . '.twig', $data->toArray());
-
-                $this->logger->addSystemEvent(null, 'Data merged with view');
-            } catch (Exception $e) {
-                $data = new errorResponse(errorResponse::HTTP_STATUS_500, 'Failed to render the view');
             }
         }
 
-        if ($response === null) {
-            $response = $data->toJson();
+        if ($response === null){
+            $response = $jsonApiDocument->toJson();
         }
 
-        $code = $data->getStatus();
-        $GLOBALS['http_response_code'] = $code;
-        header(dataResponse::generateProtocol() . ' ' . $code . ' ' . $data->generateText());
+        $GLOBALS['http_response_code'] = $jsonApiDocument->getStatus();
+        header(jsonApiDocument::generateProtocol() . ' ' . $jsonApiDocument->getStatus() . ' ' . $jsonApiDocument->generateText());
 
-        $this->completeRender($code, $response);
+        $this->completeRender($jsonApiDocument->getStatus(), $response);
 
         $this->logger->addSystemEvent(null, 'Render completed');
 
-        return $response;
+        return $jsonApiDocument->toJson();
     }
 
     /**
@@ -105,13 +98,13 @@ class controller extends abstractWebController {
      * @throws JsonException
      */
     public function writeException(Throwable $e, string $httpStatusCode = '500'): void {
-        $error = new errorResponse($httpStatusCode, $e->getMessage(), $e->getCode());
+        $response = new jsonApiDocument();
+        $response->addError(new errorObject($httpStatusCode, $e->getMessage(), $e->getCode()));
 
-        $code = $error->getStatus();
-        $GLOBALS['http_response_code'] = $code;
+        $GLOBALS['http_response_code'] = $response->getStatus();
 
-        header(dataResponse::generateProtocol() . ' ' . $code . ' ' . $error->generateText());
+        header(jsonApiDocument::generateProtocol() . ' ' . $response->getStatus() . ' ' . $response->generateText());
 
-        echo $error->toJson();
+        echo $response->toJson();
     }
 }

@@ -8,20 +8,21 @@ use carlonicora\minimalism\modules\jsonapi\web\extensions\twigExtensions;
 use carlonicora\minimalism\services\encrypter\encrypter;
 use carlonicora\minimalism\services\jsonapi\interfaces\jsonapiModelInterface;
 use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
-use carlonicora\minimalism\services\jsonapi\responses\dataResponse;
-use carlonicora\minimalism\services\jsonapi\responses\errorResponse;
+use carlonicora\minimalism\services\jsonapi\jsonApiDocument;
+use carlonicora\minimalism\services\jsonapi\resources\errorObject;
 use carlonicora\minimalism\services\jsonapi\traits\modelTrait;
 use carlonicora\minimalism\services\paths\paths;
+use Exception;
 use Twig\Extension\ExtensionInterface;
 
 abstract class abstractModel extends abstractWebModel implements jsonapiModelInterface {
     use modelTrait;
 
-    /** @var dataResponse  */
-    protected dataResponse $response;
+    /** @var jsonApiDocument  */
+    protected jsonApiDocument $response;
 
-    /** @var errorResponse|null  */
-    protected ?errorResponse $error=null;
+    /** @var errorObject|null  */
+    protected ?errorObject $error=null;
 
     /** @var array  */
     private array $twigExtensions = [];
@@ -32,11 +33,12 @@ abstract class abstractModel extends abstractWebModel implements jsonapiModelInt
      * @param array $passedParameters
      * @param array $file
      * @throws serviceNotFoundException
+     * @throws Exception
      */
     public function __construct(servicesFactory $services, array $passedParameters, array $file=null){
         parent::__construct($services, $passedParameters, $file);
 
-        $this->response = new dataResponse();
+        $this->response = new jsonApiDocument();
 
         /** @var paths $paths */
         $paths = $this->services->service(paths::class);
@@ -64,7 +66,7 @@ abstract class abstractModel extends abstractWebModel implements jsonapiModelInt
      * @return string
      * @throws serviceNotFoundException
      */
-    protected function decryptParameter(string $parameter) : string {
+    public function decryptParameter(string $parameter) : string {
         /** @var encrypter $encrypter */
         $encrypter = $this->services->service(encrypter::class);
 
@@ -79,9 +81,17 @@ abstract class abstractModel extends abstractWebModel implements jsonapiModelInt
     }
 
     /**
-     * @return errorResponse|null
+     * @return errorObject|null
      */
-    public function preRender() : ?errorResponse {
+    public function preRender() : ?errorObject {
         return $this->error;
+    }
+
+    /**
+     * @param $parameter
+     * @return jsonApiDocument
+     */
+    public function validateJsonapiParameter($parameter): jsonApiDocument{
+        return new jsonApiDocument($parameter);
     }
 }
