@@ -4,7 +4,6 @@ namespace carlonicora\minimalism\modules\jsonapi\web\abstracts;
 use carlonicora\minimalism\core\modules\abstracts\models\abstractWebModel;
 use carlonicora\minimalism\core\services\exceptions\serviceNotFoundException;
 use carlonicora\minimalism\core\services\factories\servicesFactory;
-use carlonicora\minimalism\modules\jsonapi\web\extensions\twigExtensions;
 use carlonicora\minimalism\services\encrypter\encrypter;
 use carlonicora\minimalism\services\jsonapi\interfaces\jsonapiModelInterface;
 use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
@@ -43,14 +42,12 @@ abstract class abstractModel extends abstractWebModel implements jsonapiModelInt
         /** @var paths $paths */
         $paths = $this->services->service(paths::class);
         $this->response->addMeta('url', $paths->getUrl());
-
-        $this->twigExtensions[] = new twigExtensions();
     }
 
     /**
      * @param ExtensionInterface $extension
      */
-    protected function addTwigExtension(ExtensionInterface $extension): void {
+    public function addTwigExtension(ExtensionInterface $extension): void {
         $this->twigExtensions[] = $extension;
     }
 
