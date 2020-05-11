@@ -81,6 +81,7 @@ abstract class abstractTestCase extends TestCase
 
         $this->setAttribute($controller, 'model', $model);
 
+        /** @var MockObject $controller */
         return $controller;
     }
 
@@ -113,7 +114,7 @@ abstract class abstractTestCase extends TestCase
         $this->encrypterService->method('decryptId')->willReturn(1);
     }
 
-    protected function invokeMethod(&$object, $methodName, array $parameters = [])
+    protected function invokeMethod($object, $methodName, array $parameters = [])
     {
         try {
             $reflection = new ReflectionClass(get_class($object));
@@ -125,7 +126,7 @@ abstract class abstractTestCase extends TestCase
         }
     }
 
-    protected function setAttribute(&$object, $attributeName, $value) : void
+    protected function setAttribute($object, $attributeName, $value) : void
     {
         try {
             $reflection = new ReflectionClass(get_class($object));

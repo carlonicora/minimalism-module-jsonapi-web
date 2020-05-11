@@ -71,7 +71,7 @@ class controller extends abstractWebController {
                     $this->logger->addSystemEvent(null, 'Data merged with view');
                 } catch (Exception $e) {
                     $document = new document();
-                    $document->addError(new error(responseInterface::HTTP_STATUS_500, 'Failed to render the view'));
+                    $document->addError(new error(response::HTTP_STATUS_500, 'Failed to render the view'));
                 }
             }
         }

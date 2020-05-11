@@ -5,11 +5,8 @@ use carlonicora\jsonapi\document;
 use carlonicora\minimalism\modules\jsonapi\web\abstracts\abstractModel;
 use carlonicora\minimalism\modules\jsonapi\web\tests\abstracts\abstractTestCase;
 use carlonicora\minimalism\modules\jsonapi\web\tests\traits\arraysTrait;
-use carlonicora\minimalism\services\jsonapi\jsonApiDocument;
-use carlonicora\minimalism\services\jsonapi\resources\errorObject;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Test\Extension;
 use Twig\Extension\ExtensionInterface;
 
 class modelTest extends abstractTestCase

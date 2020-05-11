@@ -44,7 +44,6 @@ class twigExtensionsTest extends abstractTestCase
      */
     public function testIncludedTypeId() : void
     {
-        $document = new document($this->jsonApiDocumentComplete);
         $object = new twigExtensions();
 
         $this->assertEquals($this->objectUserWithRelationship, $object->includedTypeId($this->jsonApiDocumentComplete['included'], 'user', '10'));
