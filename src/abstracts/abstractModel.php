@@ -1,27 +1,22 @@
 <?php
 namespace carlonicora\minimalism\modules\jsonapi\web\abstracts;
 
+use carlonicora\jsonapi\document;
+use carlonicora\jsonapi\objects\error;
 use carlonicora\minimalism\core\modules\abstracts\models\abstractWebModel;
 use carlonicora\minimalism\core\services\exceptions\serviceNotFoundException;
 use carlonicora\minimalism\core\services\factories\servicesFactory;
 use carlonicora\minimalism\services\encrypter\encrypter;
-use carlonicora\minimalism\services\jsonapi\interfaces\jsonapiModelInterface;
-use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
-use carlonicora\minimalism\services\jsonapi\jsonApiDocument;
-use carlonicora\minimalism\services\jsonapi\resources\errorObject;
-use carlonicora\minimalism\services\jsonapi\traits\modelTrait;
 use carlonicora\minimalism\services\paths\paths;
 use Exception;
 use Twig\Extension\ExtensionInterface;
 
-abstract class abstractModel extends abstractWebModel implements jsonapiModelInterface {
-    use modelTrait;
+abstract class abstractModel extends abstractWebModel {
+    /** @var document  */
+    protected document $document;
 
-    /** @var jsonApiDocument  */
-    protected jsonApiDocument $response;
-
-    /** @var errorObject|null  */
-    protected ?errorObject $error=null;
+    /** @var error|null  */
+    protected ?error $error=null;
 
     /** @var array  */
     private array $twigExtensions = [];
@@ -37,11 +32,11 @@ abstract class abstractModel extends abstractWebModel implements jsonapiModelInt
     public function __construct(servicesFactory $services, array $passedParameters, array $file=null){
         parent::__construct($services, $passedParameters, $file);
 
-        $this->response = new jsonApiDocument();
+        $this->document = new document();
 
         /** @var paths $paths */
         $paths = $this->services->service(paths::class);
-        $this->response->addMeta('url', $paths->getUrl());
+        $this->document->meta->add('url', $paths->getUrl());
     }
 
     /**
@@ -70,25 +65,26 @@ abstract class abstractModel extends abstractWebModel implements jsonapiModelInt
         return $encrypter->decryptId($parameter);
     }
 
-    /**
+    /*
      * @return responseInterface
      */
-    public function generateData(): responseInterface{
-        return $this->response;
+    public function generateData(): document{
+        return $this->document;
     }
 
     /**
-     * @return errorObject|null
+     * @return error|null
      */
-    public function preRender() : ?errorObject {
+    public function preRender() : ?error {
         return $this->error;
     }
 
     /**
      * @param $parameter
-     * @return jsonApiDocument
+     * @return document
+     * @throws Exception
      */
-    public function validateJsonapiParameter($parameter): jsonApiDocument{
-        return new jsonApiDocument($parameter);
+    public function validateJsonapiParameter($parameter): document{
+        return new document($parameter);
     }
 }

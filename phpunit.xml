@@ -2,7 +2,8 @@
 <phpunit bootstrap="vendor/autoload.php"
          colors="true"
          verbose="true"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         stderr="true">
     <testsuites>
         <testsuite name="minimalism-module-jsonapi-api test">
             <directory>tests</directory>

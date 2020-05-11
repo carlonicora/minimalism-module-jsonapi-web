@@ -1,12 +1,12 @@
 <?php
 namespace carlonicora\minimalism\modules\jsonapi\web;
 
+use carlonicora\jsonapi\document;
+use carlonicora\jsonapi\objects\error;
+use carlonicora\jsonapi\response;
 use carlonicora\minimalism\core\modules\abstracts\controllers\abstractWebController;
 use carlonicora\minimalism\core\services\exceptions\serviceNotFoundException;
 use carlonicora\minimalism\modules\jsonapi\web\abstracts\abstractModel;
-use carlonicora\minimalism\services\jsonapi\interfaces\responseInterface;
-use carlonicora\minimalism\services\jsonapi\jsonApiDocument;
-use carlonicora\minimalism\services\jsonapi\resources\errorObject;
 use carlonicora\minimalism\services\paths\paths;
 use JsonException;
 use RuntimeException;
@@ -45,20 +45,19 @@ class controller extends abstractWebController {
      * @throws JsonException
      */
     public function render(): string{
-        $jsonApiDocument = new jsonApiDocument();
+        $document = new document();
 
         $response = null;
 
-        /** @var errorObject $error  */
         if (($error = $this->model->preRender()) !== null){
-            $jsonApiDocument->addError($error);
+            $document->addError($error);
         } else {
             $this->logger->addSystemEvent(null, 'Pre-render completed');
 
             $this->preRender();
 
-            /** @var jsonApiDocument $jsonApiDocument */
-            $jsonApiDocument = $this->model->generateData();
+            /** @var document $document */
+            $document = $this->model->generateData();
 
             $this->logger->addSystemEvent(null, 'Data generated');
 
@@ -67,28 +66,30 @@ class controller extends abstractWebController {
                     foreach ($this->model->getTwigExtensions() ?? [] as $twigExtension){
                         $this->view->addExtension($twigExtension);
                     }
-                    $response = $this->view->render($this->model->getViewName() . '.twig', $jsonApiDocument->toArray());
+                    $response = $this->view->render($this->model->getViewName() . '.twig', $document->prepare());
 
                     $this->logger->addSystemEvent(null, 'Data merged with view');
                 } catch (Exception $e) {
-                    $jsonApiDocument = new jsonApiDocument();
-                    $jsonApiDocument->addError(new errorObject(responseInterface::HTTP_STATUS_500, 'Failed to render the view'));
+                    $document = new document();
+                    $document->addError(new error(responseInterface::HTTP_STATUS_500, 'Failed to render the view'));
                 }
             }
         }
 
         if ($response === null){
-            $response = $jsonApiDocument->toJson();
+            $response = $document->export();
         }
 
-        $GLOBALS['http_response_code'] = $jsonApiDocument->getStatus();
-        header(jsonApiDocument::generateProtocol() . ' ' . $jsonApiDocument->getStatus() . ' ' . $jsonApiDocument->generateText());
+        $responseObject = new response();
+        $responseObject->document = $document;
 
-        $this->completeRender($jsonApiDocument->getStatus(), $response);
+        $responseObject->renderHeaders();
+
+        $this->completeRender($responseObject->httpStatus, $response);
 
         $this->logger->addSystemEvent(null, 'Render completed');
 
-        return $jsonApiDocument->toJson();
+        return $response;
     }
 
     /**
@@ -98,13 +99,11 @@ class controller extends abstractWebController {
      * @throws JsonException
      */
     public function writeException(Throwable $e, string $httpStatusCode = '500'): void {
-        $response = new jsonApiDocument();
-        $response->addError(new errorObject($httpStatusCode, $e->getMessage(), $e->getCode()));
+        $response = new response();
+        $response->document->addError(new error($httpStatusCode, $e->getMessage(), $e->getCode()));
 
-        $GLOBALS['http_response_code'] = $response->getStatus();
+        $response->renderHeaders();
 
-        header(jsonApiDocument::generateProtocol() . ' ' . $response->getStatus() . ' ' . $response->generateText());
-
-        echo $response->toJson();
+        echo $response->document->export();
     }
 }
