@@ -126,13 +126,13 @@ abstract class abstractTestCase extends TestCase
         }
     }
 
-    protected function setAttribute($object, $attributeName, $value) : void
+    protected function setAttribute(&$object, $attributeName, $value) : void
     {
         try {
             $reflection = new ReflectionClass(get_class($object));
             $attribute = $reflection->getProperty($attributeName);
             $attribute->setAccessible(true);
-            $attribute->setValue($value);
+            $attribute->setValue($reflection, $value);
         } catch (ReflectionException $e) {
         }
     }

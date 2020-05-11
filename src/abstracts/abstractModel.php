@@ -12,6 +12,9 @@ use Exception;
 use Twig\Extension\ExtensionInterface;
 
 abstract class abstractModel extends abstractWebModel {
+    /** @var string  */
+    public const PARAMETER_TYPE_JSONAPI = 'validateJsonapiParameter';
+
     /** @var document  */
     protected document $document;
 
