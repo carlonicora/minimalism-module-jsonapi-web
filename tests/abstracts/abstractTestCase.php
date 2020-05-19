@@ -3,7 +3,7 @@ namespace CarloNicora\Minimalism\Modules\JsonApi\Web\tests\Abstracts;
 
 use CarloNicora\Minimalism\core\Modules\Abstracts\Models\AbstractModel;
 use CarloNicora\Minimalism\core\Services\Factories\ServicesFactory;
-use CarloNicora\Minimalism\Modules\JsonApi\Web\CController;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\Controller;
 use CarloNicora\Minimalism\Services\Encrypter\Encrypter;
 use CarloNicora\Minimalism\Services\logger\logger;
 use CarloNicora\Minimalism\Services\paths\paths;
@@ -70,8 +70,8 @@ abstract class abstractTestCase extends TestCase
      * @return MockObject
      */
     protected function generateMockController() : MockObject {
-        /** @var CController $controller */
-        $controller = $this->getMockBuilder(CController::class)
+        /** @var Controller $controller */
+        $controller = $this->getMockBuilder(Controller::class)
             ->disableOriginalConstructor()
             ->getMock();
 

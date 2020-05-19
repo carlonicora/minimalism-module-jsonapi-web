@@ -6,7 +6,7 @@ use carlonicora\JsonApi\Objects\error;
 use carlonicora\JsonApi\response;
 use CarloNicora\Minimalism\core\Modules\Abstracts\controllers\AbstractWebController;
 use CarloNicora\Minimalism\core\Services\Exceptions\serviceNotFoundException;
-use CarloNicora\Minimalism\Modules\JsonApi\Web\AAbstracts\AAbstractModel;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\AAbstracts\AbstractModel;
 use CarloNicora\Minimalism\Services\paths\paths;
 use JsonException;
 use RuntimeException;
@@ -15,7 +15,7 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Exception;
 
-class CController extends abstractWebController {
+class Controller extends abstractWebController {
     /** @var Environment */
     private Environment $view;
 
@@ -27,7 +27,7 @@ class CController extends abstractWebController {
         /** @var paths $paths */
         $paths = $this->services->service(paths::class);
 
-        /** @var AAbstractModel $model */
+        /** @var AbstractModel $model */
         $model = $this->model;
         if ($model->getViewName() !== '') {
             try {

@@ -2,7 +2,7 @@
 namespace CarloNicora\Minimalism\Modules\JsonApi\Web\tests\unit;
 
 use carlonicora\JsonApi\Document;
-use CarloNicora\Minimalism\Modules\JsonApi\Web\AAbstracts\AAbstractModel;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\AAbstracts\AbstractModel;
 use CarloNicora\Minimalism\Modules\JsonApi\Web\tests\Abstracts\AbstractTestCase;
 use CarloNicora\Minimalism\Modules\JsonApi\Web\tests\traits\arraysTrait;
 use Exception;
@@ -16,7 +16,7 @@ class modelTest extends abstractTestCase
     public function testModelInitialisation(): MockObject
     {
         $model = $this->getMockForAbstractClass(
-            AAbstractModel::class,
+            AbstractModel::class,
             [$this->servicesFactory, [], null]
         );
 
@@ -26,7 +26,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|AAbstractModel $model
+     * @param MockObject|AbstractModel $model
      * @depends testModelInitialisation
      * @throws Exception
      */
@@ -38,7 +38,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|AAbstractModel $model
+     * @param MockObject|AbstractModel $model
      * @depends testModelInitialisation
      * @throws Exception
      */
@@ -51,7 +51,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|AAbstractModel $model
+     * @param MockObject|AbstractModel $model
      * @depends testModelInitialisation
      */
     public function testNullPreRender(MockObject $model): void
@@ -60,7 +60,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|AAbstractModel $model
+     * @param MockObject|AbstractModel $model
      * @depends testModelInitialisation
      */
     public function testAddTwigExtension(MockObject $model): void {
@@ -72,7 +72,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|AAbstractModel $model
+     * @param MockObject|AbstractModel $model
      * @depends testModelInitialisation
      * @throws Exception
      */

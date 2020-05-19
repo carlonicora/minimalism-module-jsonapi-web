@@ -1,10 +1,10 @@
 <?php
-namespace CarloNicora\Minimalism\Modules\JsonApi\Web\EExtensions;
+namespace CarloNicora\Minimalism\Modules\JsonApi\Web\Extensions;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class TTwigExtensions extends AbstractExtension {
+class TwigExtensions extends AbstractExtension {
     /**
      * @return array|TwigFunction[]
      */
