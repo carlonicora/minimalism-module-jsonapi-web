@@ -1,12 +1,12 @@
 <?php
-namespace carlonicora\minimalism\modules\jsonapi\web\tests\abstracts;
+namespace CarloNicora\Minimalism\Modules\JsonApi\Web\tests\Abstracts;
 
-use carlonicora\minimalism\core\modules\abstracts\models\abstractModel;
-use carlonicora\minimalism\core\services\factories\servicesFactory;
-use carlonicora\minimalism\modules\jsonapi\web\controller;
-use carlonicora\minimalism\services\encrypter\encrypter;
-use carlonicora\minimalism\services\logger\logger;
-use carlonicora\minimalism\services\paths\paths;
+use CarloNicora\Minimalism\core\Modules\Abstracts\Models\AbstractModel;
+use CarloNicora\Minimalism\core\Services\Factories\ServicesFactory;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\CController;
+use CarloNicora\Minimalism\Services\Encrypter\Encrypter;
+use CarloNicora\Minimalism\Services\logger\logger;
+use CarloNicora\Minimalism\Services\paths\paths;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -70,8 +70,8 @@ abstract class abstractTestCase extends TestCase
      * @return MockObject
      */
     protected function generateMockController() : MockObject {
-        /** @var controller $controller */
-        $controller = $this->getMockBuilder(controller::class)
+        /** @var CController $controller */
+        $controller = $this->getMockBuilder(CController::class)
             ->disableOriginalConstructor()
             ->getMock();
 

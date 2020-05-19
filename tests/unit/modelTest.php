@@ -1,10 +1,10 @@
 <?php
-namespace carlonicora\minimalism\modules\jsonapi\web\tests\unit;
+namespace CarloNicora\Minimalism\Modules\JsonApi\Web\tests\unit;
 
-use carlonicora\jsonapi\document;
-use carlonicora\minimalism\modules\jsonapi\web\abstracts\abstractModel;
-use carlonicora\minimalism\modules\jsonapi\web\tests\abstracts\abstractTestCase;
-use carlonicora\minimalism\modules\jsonapi\web\tests\traits\arraysTrait;
+use carlonicora\JsonApi\Document;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\AAbstracts\AAbstractModel;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\tests\Abstracts\AbstractTestCase;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\tests\traits\arraysTrait;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use Twig\Extension\ExtensionInterface;
@@ -16,7 +16,7 @@ class modelTest extends abstractTestCase
     public function testModelInitialisation(): MockObject
     {
         $model = $this->getMockForAbstractClass(
-            abstractModel::class,
+            AAbstractModel::class,
             [$this->servicesFactory, [], null]
         );
 
@@ -26,7 +26,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|abstractModel $model
+     * @param MockObject|AAbstractModel $model
      * @depends testModelInitialisation
      * @throws Exception
      */
@@ -38,7 +38,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|abstractModel $model
+     * @param MockObject|AAbstractModel $model
      * @depends testModelInitialisation
      * @throws Exception
      */
@@ -51,7 +51,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|abstractModel $model
+     * @param MockObject|AAbstractModel $model
      * @depends testModelInitialisation
      */
     public function testNullPreRender(MockObject $model): void
@@ -60,7 +60,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|abstractModel $model
+     * @param MockObject|AAbstractModel $model
      * @depends testModelInitialisation
      */
     public function testAddTwigExtension(MockObject $model): void {
@@ -72,7 +72,7 @@ class modelTest extends abstractTestCase
     }
 
     /**
-     * @param MockObject|abstractModel $model
+     * @param MockObject|AAbstractModel $model
      * @depends testModelInitialisation
      * @throws Exception
      */

@@ -1,7 +1,7 @@
 <?php
-namespace carlonicora\minimalism\modules\jsonapi\web\tests\unit;
+namespace CarloNicora\Minimalism\Modules\JsonApi\Web\tests\unit;
 
-use carlonicora\minimalism\modules\jsonapi\web\tests\abstracts\abstractTestCase;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\tests\Abstracts\AbstractTestCase;
 
 class controllerTest extends abstractTestCase
 {

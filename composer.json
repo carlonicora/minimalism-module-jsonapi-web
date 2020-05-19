@@ -17,19 +17,19 @@
   ],
   "autoload": {
     "psr-4": {
-      "carlonicora\\minimalism\\modules\\jsonapi\\web\\":"src/"
+      "CarloNicora\\Minimalism\\Modules\\JsonApi\\Web\\":"src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "carlonicora\\minimalism\\modules\\jsonapi\\web\\tests\\": "tests/"
+      "CarloNicora\\Minimalism\\Modules\\JsonApi\\Web\\Tests\\": "tests/"
     }
   },
   "require": {
     "php": "^7.4",
-    "carlonicora/minimalism": "~10.6",
-    "carlonicora/minimalism-service-encrypter": "~1.0",
-    "carlonicora/jsonapi": "~1.0",
+    "carlonicora/minimalism": "~11.0",
+    "carlonicora/minimalism-service-encrypter": "~2.0",
+    "carlonicora/jsonapi": "~2.0",
     "twig/twig":"~2.0",
     "ext-json": "*"
   },

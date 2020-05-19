@@ -1,5 +1,5 @@
 <?php
-namespace carlonicora\minimalism\modules\jsonapi\web\tests\traits;
+namespace CarloNicora\Minimalism\Modules\JsonApi\Web\tests\traits;
 
 trait arraysTrait
 {

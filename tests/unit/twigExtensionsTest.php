@@ -1,10 +1,10 @@
 <?php
-namespace carlonicora\minimalism\modules\jsonapi\web\tests\unit;
+namespace CarloNicora\Minimalism\Modules\JsonApi\Web\tests\unit;
 
-use carlonicora\jsonapi\document;
-use carlonicora\minimalism\modules\jsonapi\web\extensions\twigExtensions;
-use carlonicora\minimalism\modules\jsonapi\web\tests\abstracts\abstractTestCase;
-use carlonicora\minimalism\modules\jsonapi\web\tests\traits\arraysTrait;
+use carlonicora\JsonApi\Document;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\EExtensions\TTwigExtensions;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\tests\Abstracts\AbstractTestCase;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\tests\traits\arraysTrait;
 use Exception;
 
 class twigExtensionsTest extends abstractTestCase
@@ -13,7 +13,7 @@ class twigExtensionsTest extends abstractTestCase
 
     public function testInitialiseTwigExtensions() : void
     {
-        $object = new twigExtensions();
+        $object = new TTwigExtensions();
 
         $response = $object->getFunctions();
 
@@ -27,14 +27,14 @@ class twigExtensionsTest extends abstractTestCase
     {
         $document = new document($this->jsonApiDocumentComplete);
         $documentArray = $document->prepare();
-        $object = new twigExtensions();
+        $object = new TTwigExtensions();
 
         $this->assertEquals($this->objectUserWithRelationship, $object->included($documentArray['included'], $this->objectUserWithRelationship));
     }
 
     public function testIncludedNoFound() : void
     {
-        $object = new twigExtensions();
+        $object = new TTwigExtensions();
 
         $this->assertEquals([], $object->included($this->jsonApiDocumentComplete['included'], $this->objectUserNonExisting));
     }
@@ -44,14 +44,14 @@ class twigExtensionsTest extends abstractTestCase
      */
     public function testIncludedTypeId() : void
     {
-        $object = new twigExtensions();
+        $object = new TTwigExtensions();
 
         $this->assertEquals($this->objectUserWithRelationship, $object->includedTypeId($this->jsonApiDocumentComplete['included'], 'user', '10'));
     }
 
     public function testIncludedTypeIdNotFound() : void
     {
-        $object = new twigExtensions();
+        $object = new TTwigExtensions();
 
         $this->assertEquals([], $object->includedTypeId($this->jsonApiDocumentComplete['included'], 'nonExistingType', '0'));
 

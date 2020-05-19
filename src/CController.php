@@ -1,13 +1,13 @@
 <?php
-namespace carlonicora\minimalism\modules\jsonapi\web;
+namespace CarloNicora\Minimalism\Modules\JsonApi\Web;
 
-use carlonicora\jsonapi\document;
-use carlonicora\jsonapi\objects\error;
-use carlonicora\jsonapi\response;
-use carlonicora\minimalism\core\modules\abstracts\controllers\abstractWebController;
-use carlonicora\minimalism\core\services\exceptions\serviceNotFoundException;
-use carlonicora\minimalism\modules\jsonapi\web\abstracts\abstractModel;
-use carlonicora\minimalism\services\paths\paths;
+use carlonicora\JsonApi\Document;
+use carlonicora\JsonApi\Objects\error;
+use carlonicora\JsonApi\response;
+use CarloNicora\Minimalism\core\Modules\Abstracts\controllers\AbstractWebController;
+use CarloNicora\Minimalism\core\Services\Exceptions\serviceNotFoundException;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\AAbstracts\AAbstractModel;
+use CarloNicora\Minimalism\Services\paths\paths;
 use JsonException;
 use RuntimeException;
 use Throwable;
@@ -15,7 +15,7 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Exception;
 
-class controller extends abstractWebController {
+class CController extends abstractWebController {
     /** @var Environment */
     private Environment $view;
 
@@ -27,7 +27,7 @@ class controller extends abstractWebController {
         /** @var paths $paths */
         $paths = $this->services->service(paths::class);
 
-        /** @var abstractModel $model */
+        /** @var AAbstractModel $model */
         $model = $this->model;
         if ($model->getViewName() !== '') {
             try {
