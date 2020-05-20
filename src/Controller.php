@@ -1,109 +1,94 @@
 <?php
 namespace CarloNicora\Minimalism\Modules\JsonApi\Web;
 
-use carlonicora\JsonApi\Document;
-use carlonicora\JsonApi\Objects\error;
-use carlonicora\JsonApi\response;
-use CarloNicora\Minimalism\core\Modules\Abstracts\controllers\AbstractWebController;
-use CarloNicora\Minimalism\core\Services\Exceptions\serviceNotFoundException;
-use CarloNicora\Minimalism\Modules\JsonApi\Web\AAbstracts\AbstractModel;
-use CarloNicora\Minimalism\Services\paths\paths;
-use JsonException;
+use CarloNicora\Minimalism\Core\Modules\Abstracts\Controllers\AbstractWebController;
+use CarloNicora\Minimalism\Core\Modules\Interfaces\ApiModelInterface;
+use CarloNicora\Minimalism\Core\Modules\Interfaces\ControllerInterface;
+use CarloNicora\Minimalism\Core\Modules\Interfaces\ModelInterface;
+use CarloNicora\Minimalism\Core\Modules\Interfaces\ResponseInterface;
+use CarloNicora\Minimalism\Core\Response;
+use CarloNicora\Minimalism\Core\Services\Exceptions\ServiceNotFoundException;
+use CarloNicora\Minimalism\Modules\JsonApi\Events\JsonApiInfoEvents;
+use CarloNicora\Minimalism\Modules\JsonApi\JsonApiResponse;
+use CarloNicora\Minimalism\Modules\JsonApi\Web\Abstracts\AbstractModel;
 use RuntimeException;
-use Throwable;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Exception;
 
-class Controller extends abstractWebController {
+class Controller extends AbstractWebController {
     /** @var Environment */
     private Environment $view;
+
+    /** @var ModelInterface|ApiModelInterface|AbstractModel */
+    protected ModelInterface $model;
 
     /**
      *
      * @throws serviceNotFoundException
      */
     protected function initialiseView(): void {
-        /** @var paths $paths */
-        $paths = $this->services->service(paths::class);
-
         /** @var AbstractModel $model */
         $model = $this->model;
         if ($model->getViewName() !== '') {
             try {
-                $twigLoader = new FilesystemLoader($paths->getRoot() . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'views');
+                $twigLoader = new FilesystemLoader($this->services->paths()->getRoot()
+                    . DIRECTORY_SEPARATOR . 'src'
+                    . DIRECTORY_SEPARATOR . 'views');
                 $this->view = new Environment($twigLoader);
             } catch (Exception $e) {
                 throw new RuntimeException('View failure: ' . $e->getMessage(), 404);
             }
         }
-        $this->logger->addSystemEvent(null, 'Twig engine initialised');
+        $this->services->logger()->info()->log(JsonApiInfoEvents::TWIG_ENGINE_INITIALISED());
     }
 
     /**
-     * @return string
-     * @throws JsonException
+     * @return ControllerInterface
      */
-    public function render(): string{
-        $document = new document();
+    public function postInitialise(): ControllerInterface
+    {
+        return $this;
+    }
 
-        $response = null;
-
-        if (($error = $this->model->preRender()) !== null){
-            $document->addError($error);
-        } else {
-            $this->logger->addSystemEvent(null, 'Pre-render completed');
-
+    /**
+     * @return Response
+     */
+    public function render() : ResponseInterface
+    {
+        try {
             $this->preRender();
 
-            /** @var document $document */
-            $document = $this->model->generateData();
+            $this->services->logger()->info()->log(JsonApiInfoEvents::PRE_RENDER_COMPLETED());
 
-            $this->logger->addSystemEvent(null, 'Data generated');
+            /** @var JsonApiResponse $response */
+            $response = $this->model->generateData();
+
+            $this->services->logger()->info()->log(JsonApiInfoEvents::DATA_GENERATED());
 
             if ($this->model->getViewName() !== '') {
                 try {
                     foreach ($this->model->getTwigExtensions() ?? [] as $twigExtension){
                         $this->view->addExtension($twigExtension);
                     }
-                    $response = $this->view->render($this->model->getViewName() . '.twig', $document->prepare());
+                    $response->setData($this->view->render($this->model->getViewName() . '.twig', $response->getDocument()->prepare()));
 
-                    $this->logger->addSystemEvent(null, 'Data merged with view');
+
+                    $this->services->logger()->info()->log(JsonApiInfoEvents::DATA_MERGED($this->model->getViewName()));
                 } catch (Exception $e) {
-                    $document = new document();
-                    $document->addError(new error(response::HTTP_STATUS_500, 'Failed to render the view'));
+                    $response = $this->model->generateResponseFromError(new Exception(ResponseInterface::HTTP_STATUS_500, 'Failed to render the view'));
                 }
             }
+        } catch (Exception $e) {
+            $response = $this->model->generateResponseFromError($e);
         }
 
-        if ($response === null){
-            $response = $document->export();
-        }
+        $response->setContentType('text/html');
 
-        $responseObject = new response();
-        $responseObject->document = $document;
+        $this->completeRender($response->getStatus(), $response->getData());
 
-        $responseObject->renderHeaders();
-
-        $this->completeRender($responseObject->httpStatus, $response);
-
-        $this->logger->addSystemEvent(null, 'Render completed');
+        $this->services->logger()->info()->log(JsonApiInfoEvents::RENDER_COMPLETE());
 
         return $response;
-    }
-
-    /**
-     * @param Throwable $e
-     * @param string $httpStatusCode
-     * @return void
-     * @throws JsonException
-     */
-    public function writeException(Throwable $e, string $httpStatusCode = '500'): void {
-        $response = new response();
-        $response->document->addError(new error($httpStatusCode, $e->getMessage(), $e->getCode()));
-
-        $response->renderHeaders();
-
-        echo $response->document->export();
     }
 }
