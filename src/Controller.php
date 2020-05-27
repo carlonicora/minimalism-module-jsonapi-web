@@ -6,8 +6,6 @@ use CarloNicora\Minimalism\Core\Modules\Interfaces\ApiModelInterface;
 use CarloNicora\Minimalism\Core\Modules\Interfaces\ControllerInterface;
 use CarloNicora\Minimalism\Core\Modules\Interfaces\ModelInterface;
 use CarloNicora\Minimalism\Core\Modules\Interfaces\ResponseInterface;
-use CarloNicora\Minimalism\Core\Response;
-use CarloNicora\Minimalism\Core\Services\Exceptions\ServiceNotFoundException;
 use CarloNicora\Minimalism\Modules\JsonApi\Events\JsonApiInfoEvents;
 use CarloNicora\Minimalism\Modules\JsonApi\JsonApiResponse;
 use CarloNicora\Minimalism\Modules\JsonApi\Web\Abstracts\AbstractModel;
@@ -24,8 +22,7 @@ class Controller extends AbstractWebController {
     protected ModelInterface $model;
 
     /**
-     *
-     * @throws serviceNotFoundException
+     * @throws Exception
      */
     protected function initialiseView(): void {
         /** @var AbstractModel $model */
@@ -52,7 +49,8 @@ class Controller extends AbstractWebController {
     }
 
     /**
-     * @return Response
+     * @return ResponseInterface
+     * @throws Exception
      */
     public function render() : ResponseInterface
     {

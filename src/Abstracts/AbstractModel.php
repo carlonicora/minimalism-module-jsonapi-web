@@ -5,8 +5,8 @@ use CarloNicora\JsonApi\Document;
 use CarloNicora\JsonApi\Objects\Error;
 use CarloNicora\Minimalism\Core\Modules\Abstracts\Models\AbstractWebModel;
 use CarloNicora\Minimalism\Core\Modules\Interfaces\ResponseInterface;
-use CarloNicora\Minimalism\Core\Response;
 use CarloNicora\Minimalism\Core\Services\Factories\ServicesFactory;
+use CarloNicora\Minimalism\Modules\JsonApi\JsonApiResponse;
 use CarloNicora\Minimalism\Modules\JsonApi\Traits\JsonApiModelTrait;
 use CarloNicora\Minimalism\Services\Encrypter\Encrypter;
 use CarloNicora\Minimalism\Services\Encrypter\ParameterValidator\Decrypter;
@@ -33,6 +33,7 @@ abstract class AbstractModel extends AbstractWebModel {
     /**
      * AbstractModel constructor.
      * @param ServicesFactory $services
+     * @throws Exception
      */
     public function __construct(ServicesFactory $services)
     {
@@ -82,7 +83,7 @@ abstract class AbstractModel extends AbstractWebModel {
      * @return responseInterface
      */
     public function generateData() : ResponseInterface{
-        return new Response();
+        return new JsonApiResponse();
     }
 
     /**
