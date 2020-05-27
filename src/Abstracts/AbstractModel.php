@@ -1,7 +1,7 @@
 <?php
 namespace CarloNicora\Minimalism\Modules\JsonApi\Web\Abstracts;
 
-use carlonicora\JsonApi\Document;
+use CarloNicora\JsonApi\Document;
 use CarloNicora\JsonApi\Objects\Error;
 use CarloNicora\Minimalism\Core\Modules\Abstracts\Models\AbstractWebModel;
 use CarloNicora\Minimalism\Core\Modules\Interfaces\ResponseInterface;
