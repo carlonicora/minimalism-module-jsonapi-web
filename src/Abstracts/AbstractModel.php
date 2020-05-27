@@ -98,10 +98,10 @@ abstract class AbstractModel extends AbstractWebModel {
 
     /**
      * @param $parameter
-     * @return document
+     * @return Document
      * @throws Exception
      */
-    public function validateJsonapiParameter($parameter): document{
-        return new document($parameter);
+    public function validateJsonapiParameter($parameter): Document{
+        return new Document($parameter);
     }
 }
