@@ -31,7 +31,7 @@ class Controller extends AbstractWebController {
             try {
                 $twigLoader = new FilesystemLoader($this->services->paths()->getRoot()
                     . DIRECTORY_SEPARATOR . 'src'
-                    . DIRECTORY_SEPARATOR . 'views');
+                    . DIRECTORY_SEPARATOR . 'Views');
                 $this->view = new Environment($twigLoader);
             } catch (Exception $e) {
                 throw new RuntimeException('View failure: ' . $e->getMessage(), 404);
